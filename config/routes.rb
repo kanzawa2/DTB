@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       get 'organize'
       post 'simple_create'
     end
+    member do
+      get 'reuse'
+    end
   end
 
   resources :states do

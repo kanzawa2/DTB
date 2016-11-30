@@ -16,6 +16,8 @@
     <%= link_to (fa_icon 'pencil'), edit_mission_path(mission) %>
   </td>
   <td>
+    <%= link_to (fa_icon 'repeat'), reuse_mission_path(mission) %>
+  <td>
     <%= link_to (fa_icon 'trash-o'),
         mission, method: :delete, data: { confirm: 'Are you sure?' } %>
   </td>
@@ -26,3 +28,4 @@
 <%= render partial: 'tasks/tree_grid_item',
            collection: mission.tasks,
            as: :task %>
+

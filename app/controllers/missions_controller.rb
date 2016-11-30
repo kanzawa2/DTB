@@ -1,5 +1,5 @@
 class MissionsController < ApplicationController
-  before_action :set_mission, only: [:show, :edit, :update, :destroy]
+  before_action :set_mission, only: [:show, :edit, :update, :destroy, :reuse]
 
   # GET /missions
   # GET /missions.json
@@ -48,7 +48,7 @@ class MissionsController < ApplicationController
           flash[:success] = 'Mission was successfully created.'
           redirect_to @mission
         end
-        format.json { render action: 'show', status: :created, location: @mission }
+       format.json { render action: 'show', status: :created, location: @mission }
       else
         format.html { render action: 'new' }
         format.json { render json: @mission.errors, status: :unprocessable_entity }
@@ -78,7 +78,7 @@ class MissionsController < ApplicationController
   def destroy
     @mission.destroy
     respond_to do |format|
-      format.html { redirect_to missions_url }
+      format.html { redirect_to :back }
       format.json { head :no_content }
     end
   end
@@ -99,6 +99,16 @@ class MissionsController < ApplicationController
     redirect_to :back
   end
 
+  def reuse
+    @new_mission = @mission.deep_clone
+    @new_mission.save
+    mission = @mission
+    new_mission = @new_mission
+    copy_child(mission, new_mission)
+    
+    redirect_to :back
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -108,6 +118,24 @@ class MissionsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def mission_params
-    params.require(:mission).permit(:name, :description, :deadline, :state_id, :keyword, :parent_id)
+    params.require(:mission).permit(:id, :name, :description, :deadline, :state_id, :keyword, :parent_id)
   end
+
+  def copy_children(mission, new_mission)
+    mission.tasks.reverse_each do |task|
+      new_task = task.deep_clone
+      new_task.mission_id = new_mission.id
+      new_task.save
+    end
+    mission.children.reverse_each do |child|
+      new_child = child.deep_clone
+      new_child.save
+      new_child.move_to_child_of(new_mission)
+      if child.children == nil && child.tasks == nil  then
+        return
+      end
+      copy_children(child, new_child)      
+    end
+  end
+
 end

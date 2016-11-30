@@ -98,3 +98,5 @@ group :test do
   # Check test coverage
   gem 'coveralls', require: false
 end
+
+gem 'deep_cloneable', '~> 2.2.2'

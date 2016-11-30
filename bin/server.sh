@@ -93,11 +93,11 @@ do_start () {
   case "$environment" in
     dev*)
       export RAILS_ENV="development"
-      export SERVER_PORT=3000
+      export SERVER_PORT=12345
       ;;
     pro*)
       export RAILS_ENV="production"
-      export SERVER_PORT=3000
+      export SERVER_PORT=12345
       bundle exec rake assets:precompile RAILS_ENV="$RAILS_ENV"
       bundle exec rake assets:precompile:image
       ;;
