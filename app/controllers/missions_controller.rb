@@ -100,11 +100,10 @@ class MissionsController < ApplicationController
   end
 
   def reuse
-    @new_mission = @mission.deep_clone
+    @new_mission = @mission.deep_clone except: [:deadline, :state_id]
+    @new_mission.state_id = State.find_by(default: true).id
     @new_mission.save
-    mission = @mission
-    new_mission = @new_mission
-    copy_child(mission, new_mission)
+    copy_children(@mission, @new_mission)
     
     redirect_to :back
   end
@@ -123,18 +122,20 @@ class MissionsController < ApplicationController
 
   def copy_children(mission, new_mission)
     mission.tasks.reverse_each do |task|
-      new_task = task.deep_clone
+      new_task = task.deep_clone except: [:deadline, :state_id]
       new_task.mission_id = new_mission.id
+      new_task.state_id = State.find_by(default: true).id
       new_task.save
     end
     mission.children.reverse_each do |child|
-      new_child = child.deep_clone
+      new_child = child.deep_clone except: [:deadline, :state_id]
+      new_child.state_id = State.find_by(default: true).id
       new_child.save
       new_child.move_to_child_of(new_mission)
-      if child.children == nil && child.tasks == nil  then
+      if child.children == nil && child.tasks == nil then
         return
       end
-      copy_children(child, new_child)      
+      copy_children(child, new_child)
     end
   end
 
