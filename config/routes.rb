@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
     member do
       get 'reuse'
+      get 'diff'
     end
   end
 

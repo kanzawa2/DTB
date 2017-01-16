@@ -18,6 +18,21 @@
   <%= @mission.keyword %>
 </p>
 
+<p>
+  <strong>Source_Mission:</strong>
+  <%= link_to @mission.reuse_source.name, mission_path(@mission.reuse_source) unless @mission.reuse_source.nil? %>
+  <%= link_to "diff from parent", diff_mission_path(@mission) unless @mission.reuse_source.nil? %>
+</p>
+
+<p>
+  <strong>Destination_Mission:</strong>
+  <% unless @mission.reuse_destinations.nil?  then %>
+  <% @mission.reuse_destinations.reverse_each do |destination| %>
+  <%= link_to destination.name, mission_path(destination) %>
+  <% end %>
+  <% end %>
+</p>
+  
 <ul class="nav nav-tabs" role="tablist">
   <li class="active">
     <a data-toggle="tab" href="#timeline">Timeline</a>
@@ -72,4 +87,5 @@
 </div>
 
 <%= link_to 'Edit', edit_mission_path(@mission) %> |
-<%= link_to 'Back', missions_path %>
+<%= link_to 'Back', missions_path %> |
+<%= link_to 'Reuse', reuse_mission_path(@mission) %>

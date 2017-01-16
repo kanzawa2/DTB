@@ -11,6 +11,7 @@
     <%= mission.deadline %>
   </td>
   <td>
+    <%= mission.reuse_source.name unless mission.reuse_source.nil? %>
   </td>
   <td>
     <%= link_to (fa_icon 'pencil'), edit_mission_path(mission) %>
@@ -28,4 +29,3 @@
 <%= render partial: 'tasks/tree_grid_item',
            collection: mission.tasks,
            as: :task %>
-

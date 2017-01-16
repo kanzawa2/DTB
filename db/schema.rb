@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151225051638) do
+ActiveRecord::Schema.define(version: 20170106015225) do
 
   create_table "missions", force: :cascade do |t|
     t.string   "name"
@@ -25,12 +25,20 @@ ActiveRecord::Schema.define(version: 20151225051638) do
     t.integer  "lft"
     t.integer  "rgt"
     t.integer  "depth"
+    t.integer  "children_count", default: 0, null: false
   end
 
   add_index "missions", ["depth"], name: "index_missions_on_depth"
   add_index "missions", ["lft"], name: "index_missions_on_lft"
   add_index "missions", ["parent_id"], name: "index_missions_on_parent_id"
   add_index "missions", ["rgt"], name: "index_missions_on_rgt"
+
+  create_table "reuse_relationships", force: :cascade do |t|
+    t.integer  "source_id"
+    t.integer  "destination_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
   create_table "states", force: :cascade do |t|
     t.string   "name"

@@ -7,6 +7,11 @@ class Mission < ActiveRecord::Base
   # has_many :children, class_name: 'Mission', foreign_key: :parent_id
   # belongs_to :parent, class_name: 'Mission', foreign_key: :parent_id
   belongs_to :state
+
+  has_one :source_relation, foreign_key: 'destination_id', class_name: 'ReuseRelationship'
+  has_many :destination_relations, foreign_key: 'source_id', class_name: 'ReuseRelationship'
+  has_one :reuse_source, through: :source_relation, source: :source
+  has_many :reuse_destinations, through: :destination_relations, source: :destination
   default_scope { includes(:state, tasks: :time_entries).order(created_at: :desc) }
 
   def durations
